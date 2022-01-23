@@ -87,7 +87,7 @@ getColourAroundNumberPossibilites :: CoordValue -> BoardSize -> [[Coordinate]]
 getColourAroundNumberPossibilites ( numberCoord, k ) size = possibilites k (getFieldsToColour numberCoord size)
 
 
--- inserts white tiles if not all tiles are specified in all list of possibilities to colour tiles on board
+-- inserts white tiles if not all tiles are specified in all list of possibilities to colour tiles on board   -----------------------------DO POPRAWY
 markWhiteTilesInPossibilites :: [[Coordinate]] -> Coordinate -> BoardSize -> [[CoordColoured]]
 markWhiteTilesInPossibilites [] _ _ = []
 markWhiteTilesInPossibilites arr numberCoord size = map (markWhiteTilesForPossibilityList numberCoord size) arr
@@ -114,9 +114,11 @@ combineTwoNeighbours x [] = x
 combineTwoNeighbours x y
     | False `elem` res      = []
     | otherwise             =  removeDuplicatesFromList (x ++ y)
-    where   res     = map (checkIfFieldColoured longer) shorter
+    where   shorter = getShorterList x y
             longer  = getLongerList x y
-            shorter = getShorterList x y
+            res     = map (checkIfFieldColoured longer) shorter
+            
+            
 
 
 -- returns all possible combinations for 2 neighbour numbers
@@ -239,7 +241,7 @@ findCreek (Creek size reqs)
     | (checkNumberRequirements size reqs) == False = Left "Nie można spelnic wymagan planszy"
     | (length creeks)  > 0              = Right (creeks !! 0)
     | otherwise                         = Left "Nie udalo sie znalezc potoku."
-    where   creeks  = tryCreateCreek boards
-            boards  = colourUnresolvedFields res size 
+    where   req     = findAllNumbersPossibleNeighbours (Creek size reqs)
             res     = combineNumbersPossibleNeighbours req
-            req     = findAllNumbersPossibleNeighbours (Creek size reqs)
+            boards  = colourUnresolvedFields res size
+            creeks  = tryCreateCreek boards

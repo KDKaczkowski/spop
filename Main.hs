@@ -30,15 +30,15 @@ main = do
 -- read file with board to solve
 readMyFile :: String -> IO ()
 readMyFile file_name =
-  catch (do handle      <- openFile file_name ReadMode --wywołanie funkcji systemowej z IO do otwarcie pliku
-            file_content    <- hGetContents handle -- wywołanie funkcji z IO do pobrznia danych z pliku
+  catch (do handle      <- openFile file_name ReadMode 
+            file_content    <- hGetContents handle u
             let read_creek    = read file_content
             errorValue <- try (print read_creek) :: IO (Either SomeException ())
             putStrLn ("\n")
             case errorValue of
                 Left  _    -> putStrLn "Niepoprawny format zawartości pliku."
                 Right _  ->  doSolveGame read_creek
-            hClose handle --zamknięcie dostępu do pliku
+            hClose handle 
         ) errorHandler
         where
           errorHandler e =
